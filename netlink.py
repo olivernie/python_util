@@ -75,19 +75,20 @@ def sendData(s, data):
     addr = (0, NL_GROUP_ALL)
     rc = s.sendto(data, addr);
 
-def recvLoop():    
+def recvLoop(loop):    
     s = openNetlink()
-    while True:
+    while loop > 0:
+        loop -= 1;
         recvData(s)
+    s.close()
 
 
-def sendPkt(loop):
+def sendLoop(loop):
     s = openNetlink()
     while loop > 0:
         loop -= 1;
         sendData(s, rawdata)
-
-#def sendRawFile(file):
+    s.close()
 
 
 '''
@@ -95,8 +96,8 @@ default behavior is to receive packet from kernel netlink driver
 '''
 if __name__ == "__main__":
     try:
-        recvLoop()
-        # sendPkt(1000000)
+        recvLoop(1000)
+        #sendLoop(1000)
     except KeyboardInterrupt:
         print "==== Total RX Packet Count: %d" % rxPktCount
         pass
